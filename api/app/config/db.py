@@ -1,6 +1,6 @@
 
 PORT = 9042
 
-KEYSPACE = 'test_bulk_insert'
+KEYSPACE = 'twitter_sentiment'
 
 BATCH_LIMIT = 100

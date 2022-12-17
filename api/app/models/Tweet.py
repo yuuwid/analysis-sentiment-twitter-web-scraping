@@ -1,4 +1,6 @@
 from db.cassandra_db import cdb
+import db.hbase_db as hbase
+
 from app.config.db import KEYSPACE
 
 class Tweet:
@@ -13,9 +15,10 @@ class Tweet:
     def insertAll(data):
         query = """
             INSERT INTO {keyspace}.tweet (id, author_id, created_at, id_scrap, id_tweet, text) 
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?) USING TTL 60
         """.format(keyspace=KEYSPACE)
         
+        # Insert to Cassandra
         cdb.batchQuery(query, data)
 
     @staticmethod
@@ -27,7 +30,13 @@ class Tweet:
     def updateSentiment(sentiment):
         for senti in sentiment:
             query = """
-                UPDATE {keyspace}.tweet SET sentiment='{conclusion}' WHERE id='{id}'
+                UPDATE {keyspace}.tweet USING TTL 60 SET sentiment='{conclusion}' WHERE id='{id}'
             """.format(keyspace=KEYSPACE, conclusion=senti['sentiment'], id=senti['id'])
 
             cdb.query(query)
+
+
+    # Develop
+    def insertToHbase(data):
+        # Insert to HBase
+        hbase.puts({})

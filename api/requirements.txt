@@ -1,0 +1,10 @@
+autopep8==2.0.0
+Flask==2.2.2
+Flask-RESTful==0.3.9
+cassandra-driver==3.25.0
+bson==0.5.10
+tweepy==4.12.1 
+cleantext==1.1.4
+translators==5.5.2
+pandas==1.5.2
+keras==2.11.0

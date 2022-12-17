@@ -1,0 +1,17 @@
+/**
+ * To use the Relative Url, you can write the href like this
+ * 
+ * <a href="./">urls</a>
+ * 
+ * 
+ * 
+ * or you can write in form
+ * 
+ * <form action="./test"> </form>
+ *
+ *
+ * In css you can use Relative Url for image like
+ * background-image = url(./images/{file_name});
+ *
+ *
+ */

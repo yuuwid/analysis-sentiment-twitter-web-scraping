@@ -5,20 +5,24 @@ from core.sentiment.finding import Sentiment
 
 from app.models.Tweet import Tweet
 
+
 class RequestScrap(Resource):
 
     def post(self):
         json_data = request.get_json(force=True)
 
-        tweet = json_data['tweet']
-        n_tweet = json_data['n_tweet']
-        id_request = json_data['id_request']
-        
-        # self.__scrap(tweet, n_tweet, id_request)
-        self.__sentiment(id_scrap=id_request)
+        try:
+            tweet = json_data['tweet']
+            n_tweet = json_data['n_tweet']
+            id_request = json_data['id_request']
 
-        return {'status': 'success', 'affected': len(Tweet.where("id_scrap", id_request))}
-    
+            self.__scrap(tweet, n_tweet, id_request)
+            self.__sentiment(id_scrap=id_request)
+
+            return {'status': 'success', 'affected': len(Tweet.where("id_scrap", id_request))}
+        except Exception:
+            return {'status': 'failed', 'error': Exception}
+
     def __scrap(self, tweet, n_tweet, id_request):
         consume = Consume(topic=tweet, max_topic=n_tweet, id_scrap=id_request)
         consume.eats()
@@ -56,10 +60,20 @@ class RequestScrap(Resource):
     def __update_sentiment(self, updated_senti):
         Tweet.updateSentiment(updated_senti)
 
-class RequestGetTweet(Resource):
+
+class RequestGetAllTweet(Resource):
     def post(self):
         json_data = request.get_json(force=True)
 
         id_scrap = json_data['id_request']
 
-        return Tweet.where("id_scrap", id_scrap)  
+        return Tweet.where("id_scrap", id_scrap)
+
+
+class RequestGetTweet(Resource):
+    def post(self):
+        json_data = request.get_json(force=True)
+
+        id_tweet = json_data['id_tweet']
+
+        return Tweet.where("id_tweet", id_tweet)

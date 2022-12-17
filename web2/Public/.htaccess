@@ -1,0 +1,10 @@
+Options -MultiViews
+RewriteEngine On
+
+RewriteRule ^assets/css/images/(.*) images/$1 [L]
+RewriteRule ^images/(.*) images/$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^ index.php [L]

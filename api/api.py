@@ -8,6 +8,8 @@ api = Api(app)
 
 api.add_resource(RequestScrap, '/api/sentiment-scraping')
 
+api.add_resource(RequestGetAllTweet, '/api/all')
+
 api.add_resource(RequestGetTweet, '/api/get')
 
 if __name__ == '__main__':

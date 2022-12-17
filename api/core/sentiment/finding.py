@@ -25,7 +25,7 @@ class Sentiment:
         self._token_str = spr.tokenize(clean_text)
 
     def __load_model(self):
-        filename = 'core/sentiment/model/twitter-model.sav'
+        filename = 'core/model/twitter-model.sav'
         return pickle.load(open(filename, 'rb'))
 
     def predic(self):
