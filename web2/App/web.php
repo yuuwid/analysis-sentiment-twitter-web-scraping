@@ -4,6 +4,8 @@ use Controllers\ExampleController;
 use Controllers\SentimentController;
 use Lawana\Routing\Register;
 
+setlocale (LC_TIME, 'id_ID');
+
 /**
  * Registrasi Web Url disini
  * web url dapat berupa link url biasa dan link REST API
@@ -27,6 +29,10 @@ Register::url('/results', [SentimentController::class, "results"]);
 Register::url('/detail', [SentimentController::class, "detail"]);
 
 Register::url('/req-scrap', [SentimentController::class, "requestScrap"]);
+
+Register::url('/search-history', [SentimentController::class, "searchHistory"])->post();
+
+Register::url('/clear-history', [SentimentController::class, "clearHistory"])->post();
 
 Register::api('/test-api', function () {
     return [1, 2, 3, 4, 5, 6];

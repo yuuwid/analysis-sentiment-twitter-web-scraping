@@ -9,7 +9,9 @@
             <div class="d-flex justify-content-center">
                 <section class="row mb-3">
                     <div class="col col-2">
-                        <img src="./images/senti/twt.png" width="50" alt="">
+                        <a class="text-decoration-none" href="./">
+                            <img src="./images/senti/twt.png" width="50" alt="">
+                        </a>
                     </div>
                     <div class="col col-10 text-center">
                         <h5><b>SENTIMENT ANALYSIS</b></h5>

@@ -55,6 +55,7 @@ class Sentiment extends BaseModel
             return $his;
         }
     }
+    
 
     public static function getSenti($val)
     {

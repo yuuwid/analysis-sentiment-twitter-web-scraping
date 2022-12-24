@@ -7,6 +7,7 @@ use Lawana\Controller\BaseController,
     Lawana\Utils\Request,
     Lawana\API\Api;
 use Lawana\Message\Flasher;
+use Lawana\Utils\Cookie;
 use Lawana\Utils\Redirect;
 use Models\Sentiment;
 
@@ -15,6 +16,14 @@ class SentimentController extends BaseController
 
     public function index(Request $request)
     {
+        $cookieHistory = json_decode(Cookie::get("history-sentiment"));
+        $histories = [];
+
+        if ($cookieHistory != null) {
+            foreach ($cookieHistory as $his) {
+                $histories[] = Sentiment::getSenti($his);
+            }
+        }
 
         $rekom_tweet = [
             faker()->city(),
@@ -22,42 +31,64 @@ class SentimentController extends BaseController
             // faker()->company(),
         ];
 
-        return view('home.input_tweet', ['rekom' => $rekom_tweet[array_rand($rekom_tweet)]]);
+        $data = [
+            'rekom' => $rekom_tweet[array_rand($rekom_tweet)],
+            'history' => $histories,
+        ];
+
+        return view('home.input_tweet', $data);
     }
 
     public function results(Request $request)
     {
         $req = $request->all();
 
+        if (sizeof($req) == 0) {
+            Flasher::create("error", "Invalid Request", 'r', 'e');
+            Redirect::to("/");
+        }
+
         $sentiment = Sentiment::getSenti($req['id_sentiment']);
         $histories = Sentiment::filterHistory($req['id_sentiment']);
 
-        $n_neg = 0;
-        $n_net = 0;
-        $n_pos = 0;
+        if (sizeof($histories) > 1) {
 
-        foreach ($histories as $his) {
-            if ($his['sentiment'] == 'Positive') {
-                $n_pos += 1;
-            } else if ($his['sentiment'] == 'Netral') {
-                $n_net += 1;
-            } else if ($his['sentiment'] == 'Negative') {
-                $n_neg += 1;
+
+            $n_neg = 0;
+            $n_net = 0;
+            $n_pos = 0;
+
+            foreach ($histories as $his) {
+                if ($his['sentiment'] == 'Positive') {
+                    $n_pos += 1;
+                } else if ($his['sentiment'] == 'Netral') {
+                    $n_net += 1;
+                } else if ($his['sentiment'] == 'Negative') {
+                    $n_neg += 1;
+                }
             }
+
+            $data = [
+                'sentiment' => $sentiment,
+                'counts' => [$n_neg, $n_net, $n_pos],
+                'histories' => $histories,
+            ];
+
+            return view('sentiment.results', $data);
         }
-
-        $data = [
-            'sentiment' => $sentiment,
-            'counts' => [$n_neg, $n_net, $n_pos],
-            'histories' => $histories,
-        ];
-
-        return view('sentiment.results', $data);
+        return view('sentiment.notfound', [
+            'id_sentiment' => $req['id_sentiment'],
+        ]);
     }
 
     public function detail(Request $request)
     {
         $req = $request->all();
+        
+        if (sizeof($req) == 0) {
+            Flasher::create("error", "Invalid Request", 'r', 'e');
+            Redirect::to("/");
+        }
 
         $data = Sentiment::getHistory($req['id_history']);
 
@@ -100,7 +131,7 @@ class SentimentController extends BaseController
                 Redirect::to("/results?id_sentiment=" . $idRequest);
             }
         } catch (Exception $e) {
-            Flasher::create("error", "Failed to Request API", 'r', 'e');
+            Flasher::create("error", "Failed to Request API: " . $e->getCode(), 'r', 'e');
             Redirect::to("/");
         }
     }
@@ -117,6 +148,11 @@ class SentimentController extends BaseController
 
         // Save Data dari Cassandra ke MongoDB
         Sentiment::insertMany(json_decode($jsonResponse));
+        // Save to Cookie
+        $cookieHis = json_decode(Cookie::get("history-sentiment"));
+        $cookieHis[] = $idRequest;
+
+        Cookie::make("history-sentiment", json_encode($cookieHis), 60 * 10);
     }
 
 
@@ -132,5 +168,12 @@ class SentimentController extends BaseController
                 Redirect::to("/");
             }
         }
+    }
+
+    public function clearHistory()
+    {
+        Cookie::drop('history-sentiment');
+        Flasher::create("clear-history-status", "History Cleared", 'g');
+        Redirect::to("/");
     }
 }
