@@ -44,7 +44,10 @@
                     <hr>
                     <section>
                         <h5 class="mb-2">Created At</h5>
-                        <p class="mb-3"><?= $data['created_at'] ?></p>
+                        <?php
+                        $date = date_create($data['created_at']);
+                        ?>
+                        <p class="mb-2"><?= date_format($date, "l, d F Y"); ?></p>
                     </section>
                 </div>
                 <div class="col">

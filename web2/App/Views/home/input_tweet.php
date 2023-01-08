@@ -22,7 +22,11 @@ use Lawana\Message\Flasher;
                     <h3><b>SENTIMENT ANALYSIS</b></h3>
                     <h3 class="text-primary"><b>TWITTER</b></h3>
                 </section>
+
+
                 <br class="mt-4">
+
+
                 <form action="./req-api" method="post">
                     <section class="">
                         <div class="mb-3 mx-5">
@@ -42,38 +46,48 @@ use Lawana\Message\Flasher;
                             <button class="btn btn-primary" type="submit">Check</button>
                         </div>
                     </section>
+
+                    <br class="mt-5">
+                    <br class="mt-5">
+
+                    <div class="d-flex justify-content-center">
+                        <div class="row ">
+                            <div class="col">
+                                <div class="text-center">
+                                    <label for="negative-check">
+                                        <img src="./images/senti/negative.png" width="50">
+                                    </label>
+                                    <p>Negative</p>
+                                    <input class="form-check-input mt-0" type="checkbox" value="0" checked id="negative-check" name="negative-check">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="text-center">
+                                    <label for="neutral-check" class="p-0">
+                                        <img src="./images/senti/neutral.png" width="50">
+                                    </label>
+                                    <p>Neutral</p>
+                                    <input class="form-check-input mt-0" type="checkbox" value="1" checked id="neutral-check" name="neutral-check">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="text-center">
+                                    <label for="positive-check">
+                                        <img src="./images/senti/positive.png" width="50">
+                                    </label>
+                                    <p>Positive</p>
+                                    <input class="form-check-input mt-0" type="checkbox" value="2" checked id="positive-check" name="positive-check">
+                                </div>
+                            </div>
+                        </div>
                 </form>
 
-                <br class="mt-5">
-                <br class="mt-5">
 
-                <div class="d-flex justify-content-center">
-                    <div class="row ">
-                        <div class="col">
-                            <div class="text-center">
-                                <img src="./images/senti/negative.png" width="50">
-                                <p>Negative</p>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="text-center">
-                                <img src="./images/senti/neutral.png" width="50">
-                                <p>Neutral</p>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="text-center">
-                                <img src="./images/senti/positive.png" width="50">
-                                <p>Positive</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
             </div>
-
-
         </div>
+
+
+    </div>
     </div>
 
     <div>

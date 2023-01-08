@@ -3,6 +3,7 @@ import db.hbase_db as hbase
 
 from app.config.db import KEYSPACE
 
+
 class Tweet:
 
     @staticmethod
@@ -17,13 +18,14 @@ class Tweet:
             INSERT INTO {keyspace}.tweet (id, author_id, created_at, id_scrap, id_tweet, text) 
             VALUES (?, ?, ?, ?, ?, ?) USING TTL 60
         """.format(keyspace=KEYSPACE)
-        
+
         # Insert to Cassandra
         cdb.batchQuery(query, data)
 
     @staticmethod
     def where(key, value):
-        query = "SELECT * FROM {keyspace}.tweet WHERE {key} = '{value}'".format(keyspace=KEYSPACE, key=key, value=value)
+        query = "SELECT * FROM {keyspace}.tweet WHERE {key} = '{value}'".format(
+            keyspace=KEYSPACE, key=key, value=value)
 
         return cdb.query(query).fetch()
 
@@ -35,8 +37,8 @@ class Tweet:
 
             cdb.query(query)
 
-
     # Develop
+
     def insertToHbase(data):
         # Insert to HBase
         hbase.puts({})

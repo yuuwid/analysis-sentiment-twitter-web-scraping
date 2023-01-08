@@ -15,9 +15,11 @@ class RequestScrap(Resource):
             tweet = json_data['tweet']
             n_tweet = json_data['n_tweet']
             id_request = json_data['id_request']
+            # id_request = "1673177756"
+            filter_sentiment = json_data['filter_sentiment']
 
             self.__scrap(tweet, n_tweet, id_request)
-            self.__sentiment(id_scrap=id_request)
+            self.__sentiment(id_request, filter_sentiment)
 
             return {'status': 'success', 'affected': len(Tweet.where("id_scrap", id_request))}
         except Exception:
@@ -34,7 +36,7 @@ class RequestScrap(Resource):
     def __save_scrap(self, results):
         Tweet.insertAll(data=results)
 
-    def __sentiment(self, id_scrap):
+    def __sentiment(self, id_scrap, filter_sentiment):
         data_dirty = Tweet.where('id_scrap', id_scrap)
 
         texts = []
@@ -49,15 +51,28 @@ class RequestScrap(Resource):
         updated_senti = []
 
         for i in range(len(results)):
-            temp = {
-                'id': data_dirty[i]['id'],
-                'sentiment': results[i]
-            }
-            updated_senti.append(temp)
+            if (filter_sentiment['negative'] is True) and (results[i] == "Negative"):
+                temp = {
+                    'id': data_dirty[i]['id'],
+                    'sentiment': results[i]
+                }
+                updated_senti.append(temp)
+            elif (filter_sentiment['neutral'] is True) and (results[i] == "Netral"):
+                temp = {
+                    'id': data_dirty[i]['id'],
+                    'sentiment': results[i]
+                }
+                updated_senti.append(temp)
+            elif (filter_sentiment['positive'] is True) and (results[i] == "Positive"):
+                temp = {
+                    'id': data_dirty[i]['id'],
+                    'sentiment': results[i]
+                }
+                updated_senti.append(temp)
 
-        self.__update_sentiment(updated_senti)
+        self.__update_sentiment(id_scrap, updated_senti)
 
-    def __update_sentiment(self, updated_senti):
+    def __update_sentiment(self, id_scrap, updated_senti):
         Tweet.updateSentiment(updated_senti)
 
 
@@ -66,8 +81,16 @@ class RequestGetAllTweet(Resource):
         json_data = request.get_json(force=True)
 
         id_scrap = json_data['id_request']
+        # id_scrap = "1673177756"
 
-        return Tweet.where("id_scrap", id_scrap)
+        results = Tweet.where("id_scrap", id_scrap)
+
+        responses = []
+        for r in results:
+            if r['sentiment'] is not None:
+                responses.append(r)
+
+        return responses
 
 
 class RequestGetTweet(Resource):

@@ -60,12 +60,20 @@
                         <p class="mb-2 line-ellipsis-2"><?= $data['sentiment']['tweet'] ?></p>
                     </section>
                     <section>
-                        <h5 class="mb-1">Banyak Tweet</h5>
+                        <h5 class="mb-1">Total Search of Tweet</h5>
                         <p class="mb-2"><?= $data['sentiment']['n_tweet'] ?></p>
                     </section>
                     <section>
-                        <h5 class="mb-1">Waktu</h5>
-                        <p class="mb-2"><?= $data['sentiment']['time'] ?></p>
+                        <h5 class="mb-1">Tweet Found</h5>
+                        <p class="mb-2"><?= array_sum($data['counts']) ?></p>
+                    </section>
+                    <section>
+                        <h5 class="mb-1">Date</h5>
+                        <?php
+                        $date = date_create($data['sentiment']['time']);
+                        // dump($data['sentiment']['time']);
+                        ?>
+                        <p class="mb-2"><?= date_format($date, "l, d F Y"); ?></p>
                     </section>
                 </div>
             </div>

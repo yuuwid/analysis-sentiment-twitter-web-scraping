@@ -52,8 +52,6 @@ class SentimentController extends BaseController
         $histories = Sentiment::filterHistory($req['id_sentiment']);
 
         if (sizeof($histories) > 1) {
-
-
             $n_neg = 0;
             $n_net = 0;
             $n_pos = 0;
@@ -76,6 +74,7 @@ class SentimentController extends BaseController
 
             return view('sentiment.results', $data);
         }
+
         return view('sentiment.notfound', [
             'id_sentiment' => $req['id_sentiment'],
         ]);
@@ -84,7 +83,7 @@ class SentimentController extends BaseController
     public function detail(Request $request)
     {
         $req = $request->all();
-        
+
         if (sizeof($req) == 0) {
             Flasher::create("error", "Invalid Request", 'r', 'e');
             Redirect::to("/");
@@ -104,10 +103,16 @@ class SentimentController extends BaseController
 
         $this->validate($req);
 
+
         $body = [
             "tweet" => $req['tweet'],
             "n_tweet" => (int) $req['n_tweet'],
             "id_request" => $idRequest,
+            "filter_sentiment" => [
+                "negative" => isset($req['negative-check']),
+                "neutral" => isset($req['neutral-check']),
+                "positive" => isset($req['positive-check']),
+            ],
         ];
 
         try {
@@ -118,12 +123,16 @@ class SentimentController extends BaseController
             if ($response['status'] === "success") {
                 $this->requestGetAllData($idRequest);
 
-
                 $senti = [
                     'id_sentiment' => $body['id_request'],
                     'tweet' => $body['tweet'],
                     'n_tweet' => $body['n_tweet'],
                     'time' => date("Y-m-d H:i:s", strtotime("now")),
+                    'filter_sentiment' => [
+                        'negative' => $body['filter_sentiment']['negative'],
+                        'neutral' => $body['filter_sentiment']['neutral'],
+                        'positive' => $body['filter_sentiment']['positive'],
+                    ]
                 ];
 
                 Sentiment::insertSenti($senti);
@@ -148,6 +157,7 @@ class SentimentController extends BaseController
 
         // Save Data dari Cassandra ke MongoDB
         Sentiment::insertMany(json_decode($jsonResponse));
+
         // Save to Cookie
         $cookieHis = json_decode(Cookie::get("history-sentiment"));
         $cookieHis[] = $idRequest;
@@ -165,6 +175,11 @@ class SentimentController extends BaseController
         } else {
             if ($req['n_tweet'] < 10) {
                 Flasher::create("error", "Minimum Tweet is 10", 'r', 'e');
+                Redirect::to("/");
+            }
+
+            if ((isset($req['negative-check']) == false) && (isset($req['neutral-check']) == false) && (isset($req['positive-check'])) == false) {
+                Flasher::create("error", "Choose one of the sentiment results !", 'r', 'e');
                 Redirect::to("/");
             }
         }

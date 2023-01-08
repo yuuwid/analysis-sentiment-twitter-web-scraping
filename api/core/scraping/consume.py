@@ -8,9 +8,9 @@ class Consume:
 
     def __init__(self, topic, max_topic = 10, return_type=dict, id_scrap=None):
         self.query = topic
-        if max_topic > 100:
-            paginate_max_topic = max_topic - 100
-            max_topic = 100
+        if max_topic > 500:
+            paginate_max_topic = max_topic - 500
+            max_topic = 500
         elif max_topic < 10:
             max_topic = 10
             paginate_max_topic = max_topic
