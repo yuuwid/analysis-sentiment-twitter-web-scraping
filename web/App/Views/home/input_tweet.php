@@ -149,7 +149,11 @@ use Lawana\Message\Flasher;
                                 <tr class="text-center">
                                     <th scope="row"><?= $h['id_sentiment'] ?></th>
                                     <td><?= $h['tweet'] ?></td>
-                                    <td><?= $h['time'] ?></td>
+                                    <?php
+                                    $date = date_create($h['time']);
+                                    // dump($data['sentiment']['time']);
+                                    ?>
+                                    <td><?= date_format($date, "l, d F Y - H:i:s"); ?></td>
                                     <td>
                                         <a href="results?id_sentiment=<?= $h['id_sentiment'] ?>" target="blank" class="btn btn-sm btn-primary">
                                             <i class="bi bi-file-earmark-ruled"></i>

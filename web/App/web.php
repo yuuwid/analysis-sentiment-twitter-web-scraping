@@ -4,7 +4,8 @@ use Controllers\ExampleController;
 use Controllers\SentimentController;
 use Lawana\Routing\Register;
 
-setlocale (LC_TIME, 'id_ID');
+// setlocale (LC_TIME, 'id_ID');
+date_default_timezone_set("Asia/Jakarta");
 
 /**
  * Registrasi Web Url disini
